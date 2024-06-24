@@ -34,6 +34,9 @@ import org.springframework.lang.Nullable;
  * internal use within the framework. It is recommended to implement the plain
  * {@link BeanPostProcessor} interface as far as possible.
  *
+ * <p>
+ *     BeanPostProcessor 的子接口，用于添加实例化前的回调，以及实例化后但在设置显式属性或进行自动接线之前的回调。通常用于禁止特定目标 Bean 的默认实例化，例如创建具有特殊 TargetSources 的代理（池化目标、延迟初始化目标等），或实现其他注入策略，例如字段注入。注意：此接口是一个特殊用途的接口，主要供框架内内部使用。建议尽可能实现普通的 BeanPostProcessor 接口。
+ * </p>
  * @author Juergen Hoeller
  * @author Rod Johnson
  * @since 1.2
@@ -94,6 +97,7 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	 * Post-process the given property values before the factory applies them
 	 * to the given bean.
 	 * <p>The default implementation returns the given {@code pvs} as-is.
+	 * 在bean工厂应用之前修改PropertyValues值
 	 * @param pvs the property values that the factory is about to apply (never {@code null})
 	 * @param bean the bean instance created, but whose properties have not yet been set
 	 * @param beanName the name of the bean

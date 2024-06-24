@@ -35,6 +35,7 @@ import org.springframework.util.StringValueResolver;
  * <p>Serves as base class for
  * {@link org.springframework.beans.factory.support.BeanDefinitionRegistry}
  * implementations.
+ * <p>实现AliasRegistry接口，作为BeanDefinitionRegistry的简单实现</p>
  *
  * @author Juergen Hoeller
  * @author Qimiao Chen

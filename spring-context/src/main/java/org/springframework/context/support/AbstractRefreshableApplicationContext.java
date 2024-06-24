@@ -94,6 +94,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * Set whether it should be allowed to override bean definitions by registering
 	 * a different definition with the same name, automatically replacing the former.
 	 * If not, an exception will be thrown. Default is "true".
+	 * <p>用相同的name注册一个不同的definition，是否允许其覆盖,自动代替以前的，如果不，将会抛出异常，默认为true</p>
 	 * @see org.springframework.beans.factory.support.DefaultListableBeanFactory#setAllowBeanDefinitionOverriding
 	 */
 	public void setAllowBeanDefinitionOverriding(boolean allowBeanDefinitionOverriding) {
@@ -116,18 +117,26 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * This implementation performs an actual refresh of this context's underlying
 	 * bean factory, shutting down the previous bean factory (if any) and
 	 * initializing a fresh bean factory for the next phase of the context's lifecycle.
+	 *
+	 * 在bean factory基础上执行一个实际的刷新，停止当前bean factory（如有）并为上下文生命周期的下一步初始化一个新的bean factory
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
+		//判断当前是否有beanFactory
 		if (hasBeanFactory()) {
 			destroyBeans();
 			closeBeanFactory();
 		}
 		try {
+			//new 一个DefaultListableBeanFactory，参数为父bean工厂(如果有，没有则为null)
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			//设置id
 			beanFactory.setSerializationId(getId());
+			//设置启动步骤
 			beanFactory.setApplicationStartup(getApplicationStartup());
+			//自定义BeanFactory,默认主要设置allowBeanDefinitionOverriding和allowCircularReferences
 			customizeBeanFactory(beanFactory);
+			//加载Beandefinition（特别重要）
 			loadBeanDefinitions(beanFactory);
 			this.beanFactory = beanFactory;
 		}
@@ -206,6 +215,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * and {@linkplain #setAllowCircularReferences "allowCircularReferences"} settings,
 	 * if specified. Can be overridden in subclasses to customize any of
 	 * {@link DefaultListableBeanFactory}'s settings.
+	 * <p>自定义被上下文应用的bean factory，默认主要设置allowBeanDefinitionOverriding和allowCircularReferences</p>
 	 * @param beanFactory the newly created bean factory for this context
 	 * @see DefaultListableBeanFactory#setAllowBeanDefinitionOverriding
 	 * @see DefaultListableBeanFactory#setAllowCircularReferences

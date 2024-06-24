@@ -32,6 +32,10 @@ import org.springframework.util.ResourceUtils;
  * from Strings when running in an ApplicationContext, using the particular
  * context's resource loading strategy.
  *
+ * <p>加载资源(例如，类路径或文件系统资源)的策略接口。需要org.springframework.context.ApplicationContext来提供此功能以及扩展的org.springframework.core.io.support.ResourcePatternResolver支持。
+ * DefaultResourceLoader是一个独立的实现，可以在ApplicationContext之外使用，也可以被ResourceEditor使用。
+ * 当在ApplicationContext中运行时，可以使用特定上下文的资源加载策略从string中填充Resource和Resource[]类型的Bean属性。</p>
+ *
  * @author Juergen Hoeller
  * @since 10.03.2004
  * @see Resource

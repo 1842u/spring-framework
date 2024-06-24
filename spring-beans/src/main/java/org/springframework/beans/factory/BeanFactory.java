@@ -87,13 +87,28 @@ import org.springframework.lang.Nullable;
  * <li>a custom {@code init-method} definition
  * <li>{@code postProcessAfterInitialization} methods of BeanPostProcessors
  * </ol>
+ * <p>bean的声明周期
+ * <ol>
+ * <li>实例化bean
+ * <li>属性填充
+ * <li>一堆Aware接口
+ * <li>初始化前调用BeanPostProcessors的postProcessBeforeInitialization方法
+ * <li>初始化
+ * <li>初始化后调用BeanPostProcessors的postProcessAfterInitialization方法
+ * <li>使用bean
+ * <li>检查Bean是否实现了DisposableBean接口，并调用接口方法
+ * <li>销毁bean
  *
+ * </ol>
  * <p>On shutdown of a bean factory, the following lifecycle methods apply:
  * <ol>
  * <li>{@code postProcessBeforeDestruction} methods of DestructionAwareBeanPostProcessors
  * <li>DisposableBean's {@code destroy}
  * <li>a custom {@code destroy-method} definition
  * </ol>
+ *
+ * <p>注意：BeanFactory和ApplicationContext都是用来管理Bean的容器，BeanFactory是最基本的IoC容器，提供了配置、创建和管理Bean的基本功能。它负责实例化、配置和管理Bean对象，以及管理Bean之间的依赖关系。
+ * ApplicationContext是BeanFactory的超集，不仅包含了BeanFactory的所有功能，还提供了额外的服务，如国际化的消息访问（MessageSource）、事件传播（通过ApplicationEventPublisher）、资源加载（如文件访问）、AOP支持、以及针对不同环境的应用上下文（如WebApplicationContext）等。</p>
  *
  * @author Rod Johnson
  * @author Juergen Hoeller

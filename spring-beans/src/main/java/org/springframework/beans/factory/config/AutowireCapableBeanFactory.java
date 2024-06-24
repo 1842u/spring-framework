@@ -53,6 +53,8 @@ import org.springframework.lang.Nullable;
  * ApplicationContext, to get access to an AutowireCapableBeanFactory:
  * simply cast the passed-in BeanFactory to AutowireCapableBeanFactory.
  *
+ * <p>为BeanFactory增加了自动装配的能力。这意味着它能够自动处理Bean之间的依赖关系，按照配置自动将依赖的Bean注入到需要它们的Bean中。这大大简化了配置，并减少了显式地使用ref属性来定义依赖的工作。</p>
+ *
  * @author Juergen Hoeller
  * @since 04.12.2003
  * @see org.springframework.beans.factory.BeanFactoryAware

@@ -37,6 +37,7 @@ import org.springframework.util.StringValueResolver;
  * client methods in the {@link org.springframework.beans.factory.BeanFactory}
  * interface.
  *
+ * <p>大多数bean factories都实现了该接口，提供了配置bean factory的能力，此外还有BeanFactory中的方法</p>
  * <p>This bean factory interface is not meant to be used in normal application
  * code: Stick to {@link org.springframework.beans.factory.BeanFactory} or
  * {@link org.springframework.beans.factory.ListableBeanFactory} for typical
@@ -54,6 +55,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	/**
 	 * Scope identifier for the standard singleton scope: {@value}.
 	 * <p>Custom scopes can be added via {@code registerScope}.
+	 * <p>单例模式</p>
 	 * @see #registerScope
 	 */
 	String SCOPE_SINGLETON = "singleton";
@@ -61,6 +63,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	/**
 	 * Scope identifier for the standard prototype scope: {@value}.
 	 * <p>Custom scopes can be added via {@code registerScope}.
+	 * <p>原型模式
 	 * @see #registerScope
 	 */
 	String SCOPE_PROTOTYPE = "prototype";
@@ -136,6 +139,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * <p>There is no expression support active in a BeanFactory by default.
 	 * An ApplicationContext will typically set a standard expression strategy
 	 * here, supporting "#{...}" expressions in a Unified EL compatible style.
+	 * 指定表达式解析策略，BeanFactory没有迷人解析策略，ApplicationContext上下文中会设置一个标准解析策略，也就是SPEL
 	 * @since 3.0
 	 */
 	void setBeanExpressionResolver(@Nullable BeanExpressionResolver resolver);
@@ -263,6 +267,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 
 	/**
 	 * Return the current number of registered BeanPostProcessors, if any.
+	 * 返回当前已经注册的BeanPostProcessors数量
 	 */
 	int getBeanPostProcessorCount();
 

@@ -27,7 +27,8 @@ import org.springframework.lang.Nullable;
  * contain a default implementation of this strategy. However,
  * {@link org.springframework.context.ApplicationContext} implementations
  * will provide expression support out of the box.
- *
+ *	通过表达式解析值的策略接口，BeanFactory没有实现，但是ApplicationContext实现了开箱即用
+ * <p><p/>
  * @author Juergen Hoeller
  * @since 3.0
  */

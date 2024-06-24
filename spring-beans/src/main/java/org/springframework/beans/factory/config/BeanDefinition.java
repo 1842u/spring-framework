@@ -30,6 +30,9 @@ import org.springframework.lang.Nullable;
  * <p>This is just a minimal interface: The main intention is to allow a
  * {@link BeanFactoryPostProcessor} to introspect and modify property values
  * and other bean metadata.
+ * <p>一个BeanDefinition描述了一个bean实例有哪些属性值、构造函数参数和进一步信息。这是一个较小的接口，其主要目的是允许BeanFactoryPostProcessor自省和修改属性值和bean元数据</p>
+ *
+ *
  *
  * @author Juergen Hoeller
  * @author Rob Harrop
@@ -159,6 +162,24 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
 	/**
 	 * Return the bean names that this bean depends on.
+	 * <pre> {@code
+	 *<bean id="beanA" class="com.example.BeanA"/>
+	 *<bean id="beanB" class="com.example.BeanB" depends-on="beanA"/>
+	 * @Configuration
+	 * public class AppConfig {
+	 *
+	 *     @Bean
+	 *     public BeanA beanA() {
+	 *         return new BeanA();
+	 *     }
+	 *
+	 *     @Bean
+	 *     @DependsOn("beanA")
+	 *     public BeanB beanB() {
+	 *         return new BeanB();
+	 *     }
+	 * }
+	 * 这样才叫依赖，如A对象中有B，这儿指的不是这种
 	 */
 	@Nullable
 	String[] getDependsOn();

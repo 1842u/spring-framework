@@ -50,6 +50,8 @@ import org.springframework.lang.Nullable;
  * and {@code containsBeanDefinition}, the methods in this interface
  * are not designed for frequent invocation. Implementations may be slow.
  *
+ * <p>这个接口扩展了基本的BeanFactory，提供了列举容器中所有Bean的能力，而不仅仅是通过名称获取Bean。你可以获取指定类型的所有Bean名称，这对于需要遍历或查找特定类型的Bean集合非常有用。<p/>
+ *
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @since 16 April 2001
@@ -215,7 +217,7 @@ public interface ListableBeanFactory extends BeanFactory {
 	 */
 	String[] getBeanNamesForType(@Nullable Class<?> type);
 
-	/**
+ 	/**
 	 * Return the names of beans matching the given type (including subclasses),
 	 * judging from either bean definitions or the value of {@code getObjectType}
 	 * in the case of FactoryBeans.
@@ -233,14 +235,32 @@ public interface ListableBeanFactory extends BeanFactory {
 	 * by other means than bean definitions.
 	 * <p>Bean names returned by this method should always return bean names <i>in the
 	 * order of definition</i> in the backend configuration, as far as possible.
-	 * @param type the class or interface to match, or {@code null} for all bean names
+	 *
+	 * <p>查找并返回与指定类型匹配的所有Bean名称数组。允许通过参数细粒度控制搜索范围和初始化行为。</p>
+	 *
+	 * <p>注意：
+	 * <ul>
+	 *   <li>此方法执行类型匹配，能够找到指定类型及其子类型的Bean。</li>
+	 *   <li>通过{@code includeNonSingletons}控制是否纳入非单例Bean，适应不同的作用域需求。</li>
+	 *   <li>{@code allowEagerInit}参数对需要基于FactoryBean的产品类型进行判断时至关重要，因为它会触发FactoryBean的初始化来检查其生成的对象类型。</li>
+	 *   <li>搜索范围限定于当前BeanFactory的顶层Bean，不涉及父BeanFactory层级。</li>
+	 *   <li>返回的Bean名称顺序尽量保持与配置文件中的声明顺序一致。</li>
+	 * </ul>
+	 *
+	 * <p>使用提示：
+	 * <ul>
+	 *   <li>谨慎处理{@code type}为{@code null}的情况，以免获取过多不必要的Bean信息。</li>
+	 *   <li>在性能敏感场景下，启用{@code allowEagerInit}可能导致不必要的性能开销。</li>
+	 * </ul>
+	 * @param type the class or interface to match, or {@code null} for all bean names 要查找的Bean类型。如果为{@code null}，则搜索所有类型的Bean。
 	 * @param includeNonSingletons whether to include prototype or scoped beans too
-	 * or just singletons (also applies to FactoryBeans)
+	 * or just singletons (also applies to FactoryBeans)是否包含非单例作用域（如原型）的Bean。默认为{@code false}，仅返回单例Bean。
 	 * @param allowEagerInit whether to initialize <i>lazy-init singletons</i> and
 	 * <i>objects created by FactoryBeans</i> (or by factory methods with a
 	 * "factory-bean" reference) for the type check. Note that FactoryBeans need to be
 	 * eagerly initialized to determine their type: So be aware that passing in "true"
 	 * for this flag will initialize FactoryBeans and "factory-bean" references.
+	 * 决定是否允许提前初始化懒加载的单例Bean以及由FactoryBean创建的对象（或使用了"factory-bean"引用的工厂方法创建的对象）。如果为true，在进行类型匹配检查之前，即使这些Bean配置为懒加载，也会被初始化。这很重要，因为为了确定FactoryBean产生的对象的类型，FactoryBean本身需要被初始化。如果为false，则仅检查原始的FactoryBean（不触发其初始化）。
 	 * @return the names of beans (or objects created by FactoryBeans) matching
 	 * the given object type (including subclasses), or an empty array if none
 	 * @see FactoryBean#getObjectType

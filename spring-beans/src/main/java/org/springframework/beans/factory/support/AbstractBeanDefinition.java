@@ -601,6 +601,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Return the bootstrap mode for this bean: default is {@code false} for using
 	 * the main pre-instantiation thread for non-lazy singleton beans and the caller
 	 * thread for prototype beans.
+	 * 返回此 Bean 的引导模式：对于非惰性单例 Bean 使用主预实例化线程和原型 Bean 使用调用程序线程，default 为 false。
 	 * @since 6.2
 	 */
 	public boolean isBackgroundInit() {
@@ -717,6 +718,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	/**
 	 * {@inheritDoc}
 	 * <p>The default is no beans to explicitly depend on.
+	 * 返回此 Bean 所依赖的 Bean 名称。缺省值是没有要显式依赖的 Bean
 	 */
 	@Override
 	@Nullable

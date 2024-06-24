@@ -27,6 +27,7 @@ import org.springframework.lang.Nullable;
  * <p>Extended by {@link BeanWrapper}; implemented by {@link BeanWrapperImpl}
  * and {@link org.springframework.validation.DataBinder}.
  *
+ * <p>注册PropertyEditors的封装方法，PropertyEditorRegistrar操作的中心接口</p>
  * @author Juergen Hoeller
  * @since 1.2.6
  * @see java.beans.PropertyEditor
@@ -38,6 +39,7 @@ public interface PropertyEditorRegistry {
 
 	/**
 	 * Register the given custom property editor for all properties of the given type.
+	 * 为所有被给类型属性注册本地的属性编辑器
 	 * @param requiredType the type of the property
 	 * @param propertyEditor the editor to register
 	 */

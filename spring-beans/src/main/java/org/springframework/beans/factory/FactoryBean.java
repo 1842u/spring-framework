@@ -53,6 +53,23 @@ import org.springframework.lang.Nullable;
  * synchronization of bean creation. There is usually no need for internal
  * synchronization other than for purposes of lazy initialization within the
  * FactoryBean itself (or the like).
+ * <p>接口：由在 {@link BeanFactory} 中使用的对象实现，这些对象本身是单个对象的工厂。如果一个 bean 实现了这个接口，它将作为一个工厂用于暴露对象，而不是直接作为将要暴露的 bean 实例。
+ *
+ * <p><b>注意：实现这个接口的 bean 不能用作普通 bean。</b>
+ * 一个 FactoryBean 是以 bean 样式定义的，但通过 bean 引用 ({@link #getObject()}) 暴露的对象总是它创建的对象。
+ *
+ * <p>FactoryBean 可以支持单例和原型，并且可以在需求时延迟创建对象或在启动时立即创建对象。{@link SmartFactoryBean} 接口允许暴露更细粒度的行为元数据。
+ *
+ * <p>这个接口在框架内部被大量使用，例如用于 AOP 的 {@link org.springframework.aop.framework.ProxyFactoryBean} 或 {@link org.springframework.jndi.JndiObjectFactoryBean}。它也可以用于自定义组件；然而，这通常仅适用于基础设施代码。
+ *
+ * <p><b>{@code FactoryBean} 是一个编程契约。实现不应该依赖于注解驱动的注入或其他反射机制。</b> {@link #getObjectType()} {@link #getObject()} 调用可能在启动过程中较早到达，甚至在任何后处理器设置之前。如果需要访问其他 bean，请实现 {@link BeanFactoryAware} 并以编程方式获取它们。
+ *
+ * <p><b>容器只负责管理 FactoryBean 实例的生命周期，而不负责 FactoryBean 创建的对象的生命周期。</b> 因此，暴露的 bean 对象上的销毁方法（例如 {@link java.io.Closeable#close()}）不会自动调用。相反，FactoryBean 应该实现 {@link DisposableBean} 并将任何此类关闭调用委托给底层对象。
+ *
+ * <p>最后，FactoryBean 对象参与包含它的 BeanFactory 的 bean 创建同步。通常不需要内部同步，除了在 FactoryBean 本身内部的延迟初始化（或类似情况）之外。
+ * <p>
+ * <p>当配置某个bean实现了FactoryBean接口时，该bean返回的对象不是FactoryBean本身，而是FactoryBean#getObject()方法返回的对象
+ * <p>当你遇到需求类似"我需在Runtime时动态地配置我的bean" 或者 "我需要确保我的bean是复杂生产步骤下的产物"时，那么FactoryBean就是你的不二之选。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller

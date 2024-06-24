@@ -160,6 +160,7 @@ public class ReaderContext {
 
 	/**
 	 * Fire a component-registered event.
+	 * 发布一个组件注册事件
 	 */
 	public void fireComponentRegistered(ComponentDefinition componentDefinition) {
 		this.eventListener.componentRegistered(componentDefinition);

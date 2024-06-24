@@ -36,6 +36,8 @@ import org.springframework.util.FileCopyUtils;
  * <p>An InputStream can be opened for every resource if it exists in
  * physical form, but a URL or File handle can just be returned for
  * certain resources. The actual behavior is implementation-specific.
+ * <p>从底层资源(如文件或类路径资源)的实际类型抽象出来的资源描述符的接口。
+ * 如果以物理形式存在，可以为每个资源打开InputStream，但是只能为某些资源返回URL或File句柄。实际的行为是特定于实现的。</p>
  *
  * @author Juergen Hoeller
  * @author Arjen Poutsma

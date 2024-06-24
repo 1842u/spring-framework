@@ -71,6 +71,11 @@ public interface ApplicationContextAware extends Aware {
 	 * @throws BeansException if thrown by application context methods
 	 * @see org.springframework.beans.factory.BeanInitializationException
 	 */
+	/**
+	 * 只有一个方法，实现这方法spring在启动过程中会默认将
+	 * 调用此方法并将ApplicationContext参数传递过来，这样
+	 * 我们就能很容易的获取到ApplicationContext了
+	 */
 	void setApplicationContext(ApplicationContext applicationContext) throws BeansException;
 
 }

@@ -76,16 +76,19 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	private static final int SUPPRESSED_EXCEPTIONS_LIMIT = 100;
 
 
-	/** Cache of singleton objects: bean name to bean instance. */
+	/** Cache of singleton objects: bean name to bean instance. 单例对象的缓存*/
+	//一级缓存
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 
-	/** Creation-time registry of singleton factories: bean name to ObjectFactory. */
+	/** Creation-time registry of singleton factories: bean name to ObjectFactory. 单例工厂的创建时注册表*/
+	//三级缓存
 	private final Map<String, ObjectFactory<?>> singletonFactories = new ConcurrentHashMap<>(16);
 
 	/** Custom callbacks for singleton creation/registration. */
 	private final Map<String, Consumer<Object>> singletonCallbacks = new ConcurrentHashMap<>(16);
 
-	/** Cache of early singleton objects: bean name to bean instance. */
+	/** Cache of early singleton objects: bean name to bean instance. 早期单例对象的缓存*/
+	//二级缓存
 	private final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>(16);
 
 	/** Set of registered singletons, containing the bean names in registration order. */
@@ -185,8 +188,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 
 	/**
 	 * Return the (raw) singleton object registered under the given name.
+	 * <p>根据被给的bean名返回单例对象</p>
 	 * <p>Checks already instantiated singletons and also allows for an early
 	 * reference to a currently created singleton (resolving a circular reference).
+	 * <p></p>
 	 * @param beanName the name of the bean to look for
 	 * @param allowEarlyReference whether early references should be created or not
 	 * @return the registered singleton object, or {@code null} if none found
@@ -194,28 +199,47 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 		// Quick check for existing instance without full singleton lock.
+		//从一级缓存中获取
 		Object singletonObject = this.singletonObjects.get(beanName);
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
+			//二级缓存中获取
 			singletonObject = this.earlySingletonObjects.get(beanName);
+			//允许早期引用的情况
 			if (singletonObject == null && allowEarlyReference) {
 				if (!this.singletonLock.tryLock()) {
+					//避免线程问题，后期细看
 					// Avoid early singleton inference outside of original creation thread.
 					return null;
 				}
 				try {
 					// Consistent creation of early reference within full singleton lock.
+					//在完整的单例锁中一致地创建早期引用。
+					//在获取锁后再次尝试从一级缓存和二级缓存获取对象的主要原因是为了确保线程安全和数据一致性。
 					singletonObject = this.singletonObjects.get(beanName);
 					if (singletonObject == null) {
 						singletonObject = this.earlySingletonObjects.get(beanName);
 						if (singletonObject == null) {
+							//三级缓存中获取
 							ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 							if (singletonFactory != null) {
 								singletonObject = singletonFactory.getObject();
+								/**
+								 * 为什么再次检查一级缓存？
+								 * 尽管锁住代码块后再次检查一级缓存似乎是多余的，但它是为了处理极少数情况下的多线程竞态问题：
+								 *
+								 * 竞态条件：
+								 * 在获取锁之前，多个线程可能会同时进入 getSingleton 方法，并且可能都判断一级缓存和二级缓存中没有对象。获取锁后，每个线程可能会创建对象。如果不再次检查一级缓存，会导致重复创建。
+								 *
+								 * 对象在锁定期间被创建：
+								 * 即使获取锁后进入了临界区，其他持有同样锁的线程可能已经创建了对象并放入一级缓存。因此，再次检查可以确保获取到的是最新的对象，避免重复创建。
+								 */
 								// Singleton could have been added or removed in the meantime.
+								//删除三级缓存中的加入二级缓存
 								if (this.singletonFactories.remove(beanName) != null) {
 									this.earlySingletonObjects.put(beanName, singletonObject);
 								}
 								else {
+									//一级缓存中获取
 									singletonObject = this.singletonObjects.get(beanName);
 								}
 							}
@@ -405,8 +429,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
-	 * Return whether the specified singleton bean is currently in creation
-	 * (within the entire factory).
+	 * Return whether the specified singleton bean is currently in creation(within the entire factory).
+	 * 返回指定单例对象是否当前在创建中
 	 * @param beanName the name of the bean
 	 */
 	public boolean isSingletonCurrentlyInCreation(@Nullable String beanName) {

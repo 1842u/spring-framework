@@ -92,6 +92,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 		// Allow a subclass to provide custom initialization of the reader,
 		// then proceed with actually loading the bean definitions.
 		initBeanDefinitionReader(beanDefinitionReader);
+		//加载bean配置并载入beandefinition
 		loadBeanDefinitions(beanDefinitionReader);
 	}
 
@@ -100,6 +101,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * of this context. The default implementation sets the validating flag.
 	 * <p>Can be overridden in subclasses, e.g. for turning off XML validation
 	 * or using a different {@link BeanDefinitionDocumentReader} implementation.
+	 * 初始化用于装入此上下文的 Bean 定义的 Bean 定义读取器。默认实现设置验证标志。可以在子类中重写，例如，用于关闭 XML 验证或使用不同的 BeanDefinitionDocumentReader 实现。
 	 * @param reader the bean definition reader used by this context
 	 * @see XmlBeanDefinitionReader#setValidating
 	 * @see XmlBeanDefinitionReader#setDocumentReaderClass
@@ -108,23 +110,14 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 		reader.setValidating(this.validating);
 	}
 
-	/**
-	 * Load the bean definitions with the given XmlBeanDefinitionReader.
-	 * <p>The lifecycle of the bean factory is handled by the {@link #refreshBeanFactory}
-	 * method; hence this method is just supposed to load and/or register bean definitions.
-	 * @param reader the XmlBeanDefinitionReader to use
-	 * @throws BeansException in case of bean registration errors
-	 * @throws IOException if the required XML document isn't found
-	 * @see #refreshBeanFactory
-	 * @see #getConfigLocations
-	 * @see #getResources
-	 * @see #getResourcePatternResolver
-	 */
+
 	protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
+		//获取配置的Resources并读取，这个人看来是可以设置多个Resource的
 		Resource[] configResources = getConfigResources();
 		if (configResources != null) {
 			reader.loadBeanDefinitions(configResources);
 		}
+		//获取配置文件位置并读取，这儿看来是可以设置多个Resource的
 		String[] configLocations = getConfigLocations();
 		if (configLocations != null) {
 			reader.loadBeanDefinitions(configLocations);

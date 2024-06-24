@@ -22,6 +22,10 @@ package org.springframework.core.metrics;
  * to mark steps during the application startup and collect data about the execution context
  * or their processing time.
  *
+ * <p>用步骤记录应用启动过程，容器和组件在程序启动过程中可以用ApplicationStartup标记步骤和收集关于上下文和过程时间
+ *
+ *
+ *
  * @author Brian Clozel
  * @since 5.3
  */
